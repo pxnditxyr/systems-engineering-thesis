@@ -1,0 +1,14 @@
+
+services:
+  postgres_db:
+    image: postgres
+    container_name: weather_db
+    restart: always
+    environment:
+      POSTGRES_USER: pxndxs
+      POSTGRES_PASSWORD: pxndxs
+      POSTGRES_DB: weather_db
+    ports:
+      - "5435:5432"
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
