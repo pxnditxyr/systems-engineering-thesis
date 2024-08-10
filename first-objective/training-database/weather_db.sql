@@ -91,18 +91,16 @@ CREATE TABLE IF NOT EXISTS incidents (
   FOREIGN KEY ( locationId ) REFERENCES locations( id )
 );
 
--- Triggers for updatedAt
+-- Table: cloudiness
 
--- CREATE OR REPLACE FUNCTION update_timestamp()
--- RETURNS TRIGGER AS $$
--- BEGIN
---   NEW.updatedAt = CURRENT_TIMESTAMP;
---   RETURN NEW;
--- END;
--- $$ LANGUAGE plpgsql;
---
--- CREATE TRIGGER update_locations
--- BEFORE UPDATE ON locations
--- FOR EACH ROW
--- EXECUTE FUNCTION update_timestamp();
---
+CREATE TABLE IF NOT EXISTS cloudiness (
+  id          SERIAL PRIMARY KEY,
+  locationId  INTEGER NOT NULL,
+  date        DATE NOT NULL,
+  value       FLOAT NOT NULL,
+
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updatedAt TIMESTAMP,
+  FOREIGN KEY ( locationId ) REFERENCES locations( id )
+);
+
