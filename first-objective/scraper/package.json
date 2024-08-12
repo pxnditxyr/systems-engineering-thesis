@@ -1,0 +1,20 @@
+{
+  "name": "wheater-scraper",
+  "version": "0.0.1",
+  "main": "./src/main.ts",
+  "scripts": {
+    "start": "bun --expose-gc ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/jsdom": "^21.1.7",
+    "@types/node": "^22.2.0",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "jsdom": "^24.1.1"
+  }
+}

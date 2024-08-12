@@ -1,3 +1,9 @@
+postgres/
 
-/first-objective/training-database/postgres/
+node_modules/
+weather-data/
 .venv/
+dist/
+
+bun.lockb
+package-lock.json
