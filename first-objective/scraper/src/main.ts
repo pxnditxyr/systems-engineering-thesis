@@ -5,7 +5,7 @@ import path from 'path'
 // import { renameFiles } from './utils'
 // import { IWeather } from './interfaces'
 import { CsvAdapter } from './adapters'
-import { getWeatherFromHtml } from './getters'
+import { getReportFromHtml, getWeatherFromHtml } from './getters'
 
 const dirPath = 'weather-data'
 const folderPath = path.join( __dirname, dirPath )
@@ -86,22 +86,57 @@ const folderPathForHtml = path.join( folderPath, 'html' )
 // CsvAdapter.append( csvPath, [ 'date', 'min', 'max', 'avg' ], weatherOrdered.map( ( weather ) => [ weather.date, weather.min.toString(), weather.max.toString(), weather.avg.toString() ] ) )
 
 // [INFO]: Get weather data from all directory html
-const getAllWeatherDataFromDirectory = ( folderPathForHtml : string, outputPath : string ) => {
-  const csvPath = path.join( outputPath, 'weather-data.csv' )
+// const getAllWeatherDataFromDirectory = ( folderPathForHtml : string, outputPath : string ) => {
+//   const csvPath = path.join( outputPath, 'weather-data.csv' )
+//   const files = fs.readdirSync( folderPathForHtml )
+//   const htmlFiles = files.filter( ( file ) => file.includes( '.html' ) )
+//   const orderedFiles = htmlFiles.sort( ( a, b ) => a.localeCompare( b ) )
+//
+//   for ( const file of orderedFiles ) {
+//     console.log( `Processing ${ file }` )
+//     const html = fs.readFileSync( `${ folderPathForHtml }/${ file }`, 'utf-8' )
+//     const weather = getWeatherFromHtml( html )
+//     const date = file.replace( '.html', '' )
+//
+//     CsvAdapter.append( csvPath, [ 'date', 'min', 'max', 'avg' ], [[ date, weather.min.toString(), weather.max.toString(), weather.avg.toString() ]] )
+//   }
+// }
+//
+// getAllWeatherDataFromDirectory( folderPathForHtml, folderPath )
+
+// [INFO]: Get weather data from all directory html
+const getReportFromDirectory = ( folderPathForHtml : string, outputPath : string ) => {
   const files = fs.readdirSync( folderPathForHtml )
   const htmlFiles = files.filter( ( file ) => file.includes( '.html' ) )
   const orderedFiles = htmlFiles.sort( ( a, b ) => a.localeCompare( b ) )
-  // const allWeatherData : IWeather[] = []
+
+  const windCsvPath = path.join( outputPath, 'wind-data.csv' )
+  const visibilityCsvPath = path.join( outputPath, 'visibility-data.csv' )
+  const atmosphericPressureCsvPath = path.join( outputPath, 'atmospheric-pressure-data.csv' )
+  const cloudinessCsvPath = path.join( outputPath, 'cloudiness-data.csv' )
+
+  CsvAdapter.delete( windCsvPath )
+  CsvAdapter.delete( visibilityCsvPath )
+  CsvAdapter.delete( atmosphericPressureCsvPath )
+  CsvAdapter.delete( cloudinessCsvPath )
+
+  CsvAdapter.create( windCsvPath, [ 'date', 'min', 'max', 'avg' ] )
+  CsvAdapter.create( visibilityCsvPath, [ 'date', 'avg' ] )
+  CsvAdapter.create( atmosphericPressureCsvPath, [ 'date', 'min', 'max', 'avg' ] )
+  CsvAdapter.create( cloudinessCsvPath, [ 'date', 'cloudiness' ] )
 
   for ( const file of orderedFiles ) {
     console.log( `Processing ${ file }` )
     const html = fs.readFileSync( `${ folderPathForHtml }/${ file }`, 'utf-8' )
-    const weather = getWeatherFromHtml( html )
     const date = file.replace( '.html', '' )
-    // allWeatherData.push({ date, ...weather })
+    const report = getReportFromHtml( html )
+    const { wind, cloudiness, visibility, atmosphericPressure } = report
 
-    CsvAdapter.append( csvPath, [ 'date', 'min', 'max', 'avg' ], [[ date, weather.min.toString(), weather.max.toString(), weather.avg.toString() ]] )
+    CsvAdapter.append( windCsvPath, [ 'date', 'min', 'max', 'avg' ], [[ date, wind.min, wind.max, wind.avg ]] )
+    CsvAdapter.append( visibilityCsvPath, [ 'date', 'avg' ], [[ date, visibility.avg ]] )
+    CsvAdapter.append( atmosphericPressureCsvPath, [ 'date', 'min', 'max', 'avg' ], [[ date, atmosphericPressure.min, atmosphericPressure.max, atmosphericPressure.avg ]] )
+    CsvAdapter.append( cloudinessCsvPath, [ 'date', 'cloudiness' ], cloudiness.map( ( cloud ) => [ date, cloud ] ) )
   }
 }
 
-getAllWeatherDataFromDirectory( folderPathForHtml, folderPath )
+getReportFromDirectory( folderPathForHtml, folderPath )
