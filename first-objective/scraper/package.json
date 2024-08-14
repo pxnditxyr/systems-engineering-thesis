@@ -3,7 +3,10 @@
   "version": "0.0.1",
   "main": "./src/main.ts",
   "scripts": {
-    "start": "bun --expose-gc ."
+    "start": "bun .",
+    "zip": "zip weather-data.zip -r ./src/weather-data",
+    "cp:wsl": "cp weather-data.zip /mnt/c/Users/pxndx/OneDrive/Desktop/",
+    "export:wsl": "bun zip && bun cp:wsl"
   },
   "keywords": [],
   "author": "",

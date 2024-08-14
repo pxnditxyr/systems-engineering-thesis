@@ -7,3 +7,5 @@ dist/
 
 bun.lockb
 package-lock.json
+
+weather-data.zip
